@@ -57,6 +57,7 @@ namespace JWT_Calisma
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
             })
             .AddJwtBearer(x =>
             {
@@ -99,8 +100,8 @@ namespace JWT_Calisma
                 .AllowAnyMethod()
                 .AllowAnyHeader());
 
-            app.UseAuthorization();
             app.UseAuthentication();
+            app.UseAuthorization();
             
 
             app.UseEndpoints(endpoints =>
