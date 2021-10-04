@@ -139,7 +139,7 @@ namespace JWT_Calisma.Controllers
                                 Subject = new ClaimsIdentity(new Claim[]
                                 {
                                 new Claim(ClaimTypes.Name,resultUser.Id.ToString()),
-                                new Claim(ClaimTypes.Role,resultUserRole[0])
+                                new Claim(ClaimTypes.Role,resultUserRole.Count() == 0 ? "null" : resultUserRole[0])
                                 }),
                                 Expires = DateTime.UtcNow.AddHours(1),
                                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appSettings.Secret)), SecurityAlgorithms.HmacSha256Signature)
