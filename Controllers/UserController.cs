@@ -1,4 +1,4 @@
-﻿using JWT_Calisma.Model;
+using JWT_Calisma.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -44,7 +44,7 @@ namespace JWT_Calisma.Controllers
         public async Task<IActionResult> GetLoginStatus(string userId)
         {
             var userResult = await userManager.FindByIdAsync(userId);
-            if (userResult!=null)
+            if (userResult != null)
             {
                 var result = signInManager.IsSignedIn(User);
                 if (result)
@@ -125,6 +125,7 @@ namespace JWT_Calisma.Controllers
                 var resultUser = await userManager.FindByNameAsync(model.Username);
                 if (resultUser != null)
                 {
+                    var resultUserRole = await userManager.GetRolesAsync(resultUser);
                     var resultPassword = await userManager.CheckPasswordAsync(resultUser, model.Password);
                     if (resultPassword != false)
                     {
@@ -132,18 +133,19 @@ namespace JWT_Calisma.Controllers
                         if (signInResult.Succeeded)
                         {
                             var tokenHandler = new JwtSecurityTokenHandler();
-                            var key = Encoding.ASCII.GetBytes(appSettings.Secret); 
+                            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
                             var tokenDescriptor = new SecurityTokenDescriptor
                             {
-                                Subject = new ClaimsIdentity(new Claim[] 
+                                Subject = new ClaimsIdentity(new Claim[]
                                 {
-                                new Claim(ClaimTypes.Name,resultUser.Id.ToString()) 
+                                new Claim(ClaimTypes.Name,resultUser.Id.ToString()),
+                                new Claim(ClaimTypes.Role,resultUserRole[0])
                                 }),
-                                Expires = DateTime.UtcNow.AddHours(1), 
-                                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appSettings.Secret)), SecurityAlgorithms.HmacSha256Signature) 
+                                Expires = DateTime.UtcNow.AddHours(1),
+                                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appSettings.Secret)), SecurityAlgorithms.HmacSha256Signature)
                             };
 
-                            var securityToken = tokenHandler.CreateToken(tokenDescriptor); 
+                            var securityToken = tokenHandler.CreateToken(tokenDescriptor);
                             var token = tokenHandler.WriteToken(securityToken);
 
                             TokenProvider.Token = token;
