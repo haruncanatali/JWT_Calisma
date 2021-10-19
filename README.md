@@ -1,6 +1,6 @@
 # JWT Örnek Proje
 
-Bu projede token bazlı sistem giriş projesi tasarlanmıştır.
+Bu projede token bazlı güvenilir bir sistem projesi tasarlanmıştır.
 #### Kullanılan Teknolojiler<hr>
 
  - Asp.Net Core 5.0
